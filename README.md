@@ -48,7 +48,7 @@ Three model versions of SAM are available with different backbone sizes:
 ## Usage
 Run the script from the command prompt, specifying the input image and output image file paths as arguments:
    ```bash
-   python mask_overlay_and_boundary.py --input input_image.jpg --output output_image.jpg
+   python main_sam.py --input input_image.jpg --output output_image.jpg --output_json output_coordinates.json
    ```
 
 
