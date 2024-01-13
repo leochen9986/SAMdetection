@@ -48,7 +48,7 @@ Three model versions of SAM are available with different backbone sizes:
 ## Usage
 Run the script from the command prompt, specifying the input image and output image file paths as arguments:
    ```bash
-   python main_sam.py --input input_image.jpg --output output_image.jpg --output_json output_coordinates.json
+   python main_sam.py --input input_image.jpg --output_image output_image.jpg --output_json output_coordinates.json
    ```
 
 
