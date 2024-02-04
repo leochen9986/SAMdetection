@@ -65,11 +65,12 @@ if __name__ == "__main__":
     parser.add_argument("--output_image", type=str, required=True, help="Path to the output segmentation image file")
     parser.add_argument("--output_image_bw", type=str, required=True, help="Path to the output segmentation image file")
     parser.add_argument("--output_json", type=str, required=True, help="Path to the output JSON file")
+    parser.add_argument("--checkpoint", type=str, required=True, help="Path to the model file")
 
     args = parser.parse_args()
 
     DEVICE = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-    sam = sam_model_registry["default"](checkpoint=r"C:\Users\Laptop\Downloads\sam_vit_h_4b8939.pth")
+    sam = sam_model_registry["default"](checkpoint=args.checkpoint)
     sam.to(device=DEVICE)
     mask_generator = SamAutomaticMaskGenerator(sam)
 
