@@ -34,27 +34,34 @@ def show_anns_with_boundaries_and_overlay(anns, image, output_path):
 
     # Create a copy of the image to draw boundaries on
     image_with_boundaries_and_overlay = image.copy()
+    img_height, img_width = image.shape[:2]
 
     sorted_anns = sorted(anns, key=(lambda x: x['area']), reverse=True)
-
+    
     for ann in sorted_anns:
         mask = ann['segmentation']
         color = np.random.randint(0, 256, size=3)
         thickness = 2  # You can adjust the thickness of the boundary
-        alpha = 0.2  # Adjust the transparency of the mask overlay (0.0 - 1.0)
+        alpha = 0.1  # Adjust the transparency of the mask overlay (0.0 - 1.0)
 
         # Find contours of the mask
         contours, _ = cv2.findContours(mask.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        
+        for contour in contours:
+            # Calculate the bounding rectangle for each contour
+            x, y, w, h = cv2.boundingRect(contour)
 
-        # Draw the boundary of each mask on the image
-        cv2.drawContours(image_with_boundaries_and_overlay, contours, -1, color.tolist(), thickness)
+            # Check if the contour is the edge of the image
+            if w < img_width * 0.95 and h < img_height * 0.95:  # Adjust the threshold as needed
+                # Draw the boundary of each mask on the image
+                cv2.drawContours(image_with_boundaries_and_overlay, [contour], -1, color.tolist(), thickness)
 
-        # Create a mask with the same shape as the image
-        mask_overlay = np.zeros_like(image)
-        mask_overlay[mask] = color
-
-        # Blend the mask overlay onto the image with transparency
-        image_with_boundaries_and_overlay = cv2.addWeighted(image_with_boundaries_and_overlay, 1, mask_overlay, alpha, 0)
+                # Create a mask with the same shape as the image for overlay
+                mask_overlay = np.zeros_like(image)
+                cv2.fillPoly(mask_overlay, [contour], color)
+                
+                # Blend the mask overlay onto the image with transparency
+                image_with_boundaries_and_overlay = cv2.addWeighted(image_with_boundaries_and_overlay, 1, mask_overlay, alpha, 0)
 
     # Save the image with boundaries and overlay to the specified output path
     cv2.imwrite(output_path, cv2.cvtColor(image_with_boundaries_and_overlay, cv2.COLOR_RGB2BGR))
