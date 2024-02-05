@@ -42,7 +42,7 @@ def show_anns_with_boundaries_and_overlay(anns, image, output_path):
         mask = ann['segmentation']
         color = np.random.randint(0, 256, size=3)
         thickness = 2  # You can adjust the thickness of the boundary
-        alpha = 0.1  # Adjust the transparency of the mask overlay (0.0 - 1.0)
+        alpha = 0.2  # Adjust the transparency of the mask overlay (0.0 - 1.0)
 
         # Find contours of the mask
         contours, _ = cv2.findContours(mask.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -58,7 +58,7 @@ def show_anns_with_boundaries_and_overlay(anns, image, output_path):
 
                 # Create a mask with the same shape as the image for overlay
                 mask_overlay = np.zeros_like(image)
-                cv2.fillPoly(mask_overlay, [contour], color)
+                mask_overlay[mask] = color
                 
                 # Blend the mask overlay onto the image with transparency
                 image_with_boundaries_and_overlay = cv2.addWeighted(image_with_boundaries_and_overlay, 1, mask_overlay, alpha, 0)
